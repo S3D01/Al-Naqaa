@@ -123,7 +123,6 @@
 </style>
 </head>
 <body>
-
 <div class="card" id="card">
   <div id="gate">
     <div class="icon">🔒</div>
@@ -132,7 +131,57 @@
     <div class="hint-label">1234</div>
     <input type="text" id="answerInput" placeholder="الإجابة هنا" autocomplete="off" inputmode="numeric">
     <button onclick="checkAnswer()">تأكيد</button>
-    <div class="error" id="errorMsg">جرّب 14481</div>
+    <div class="error" id="errorMsg">جرّب مرة أخرى</div>
   </div>
-
   <div class="success-text" id="successMsg">✅ إجابة صحيحة!</div>
+
+  <!-- غيّر رابط الصورة هنا -->
+<video id="resultImage" controls autoplay>
+  <source src="na.mp4" type="video/mp4">
+</video></div>
+
+<script>
+  const CORRECT_ANSWER = "14481";
+
+  function toWesternDigits(str) {
+    const arabicIndic = "٠١٢٣٤٥٦٧٨٩";
+    const extArabicIndic = "۰۱۲۳۴۵۶۷۸۹";
+    return str.split("").map(ch => {
+      let idx = arabicIndic.indexOf(ch);
+      if (idx !== -1) return String(idx);
+      idx = extArabicIndic.indexOf(ch);
+      if (idx !== -1) return String(idx);
+      return ch;
+    }).join("");
+  }
+
+  const input = document.getElementById('answerInput');
+  const card = document.getElementById('card');
+  const gate = document.getElementById('gate');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
+  const image = document.getElementById('resultImage');
+
+  function checkAnswer() {
+    const value = toWesternDigits(input.value.trim());
+    if (value === CORRECT_ANSWER) {
+      gate.classList.add('hidden');
+      successMsg.style.display = 'block';
+      image.style.display = 'block';
+    } else {
+      errorMsg.classList.add('show');
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      input.value = '';
+      input.focus();
+      setTimeout(() => errorMsg.classList.remove('show'), 2000);
+    }
+  }
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAnswer();
+  });
+</script>
+</body>
+</html>
